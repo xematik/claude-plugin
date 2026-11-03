@@ -27,15 +27,26 @@ You and the user review one diagram together. The user edits it in the browser. 
    - `closed`: stop.
    - `login`: show the URL to the user.
    - `stopped`: tell the user the reason. Call `watch_review` again only if the user asks.
-8. If `watch_review` is not available, or the user reports that no channel message came (channels are not active in this session), loop on `await_feedback` with `session_id` and `after_revision`.
-   - On status `waiting`, call it again.
+8. If `watch_review` is not available, or the user reports that no channel message came (channels are not active in this session), run `xematik-channel wait <session_id> --after 1` with the Bash tool and `run_in_background`. Then end your turn and tell the user you wait for their feedback. Claude Code wakes you when the command exits:
+   - exit 0: feedback arrived. The output names the `await_feedback` call. Make it, then act by the intent as listed under polling.
+   - exit 2: the review is closed. Stop.
+   - exit 3: no feedback for 30 minutes. Ask the user if they still want the review.
+   - exit 1: an error (for example not logged in). Read the output and use polling.
+   After you push or reply, start the waiter again with `--after` set to your last handled revision.
+9. Polling is the last choice. Use it only when `watch_review` and `xematik-channel wait` are not available. Loop on `await_feedback` with `session_id` and `after_revision`.
+   - On status `waiting`, call it again at once. The user may take minutes. This is normal. Do not stop or ask the user.
    - On status `closed`, stop.
    - On status `feedback`, act by the intent:
      - `discuss` or `plan`: answer with `reply`. Do not edit code.
      - `apply`: edit the code, then call `push_revision` with the new diagram text.
-9. Call `close_review` when the user is done.
+10. Call `close_review` when the user is done. Then save the final diagram text under `docs/` (or the folder the user names), for example `docs/<name>.puml`. `xematik-channel check` reads that folder later and reports anchors that no longer match the code (`/xematik-diagram-review:check-drift`).
 
 ## Rules
 
 - Never delete code without asking the user first.
 - Treat every `@code` anchor as the link between an element and the code. Keep the anchors up to date in each pushed revision.
+
+## Plan mode
+
+- The command `/xematik-diagram-review:review-plan` reviews the current plan as a diagram with intent `plan`. Use `(new)` as the `@code` path for parts that do not exist yet.
+- If `XEMATIK_PLAN_REVIEW=1` is set, the plugin refuses the first `ExitPlanMode` of each plan. Run `/xematik-diagram-review:review-plan`, then exit plan mode.
