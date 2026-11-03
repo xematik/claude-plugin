@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "xematik": {
+      "type": "http",
+      "url": "${XEMATIK_MCP_URL:-https://xematik.com/mcp}"
+    },
+    "xematik-channel": {
+      "command": "xematik-channel",
+      "env": {
+        "XEMATIK_URL": "${XEMATIK_URL:-https://xematik.com}"
+      }
+    }
+  }
+}
