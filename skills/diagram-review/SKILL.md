@@ -26,7 +26,7 @@ You and the user review one diagram together. The user edits it in the browser. 
    - `feedback`: call `await_feedback` with the `after_revision` named in the text. Then act as in step 8.
    - `closed`: stop.
    - `login`: show the URL to the user.
-   - `stopped`: tell the user the reason. Call `watch_review` again only if the user asks.
+   - `stopped`: tell the user the reason. After the problem is fixed, call `watch_review` again.
 8. If `watch_review` is not available, or the user reports that no channel message came (channels are not active in this session), run `xematik-channel wait <session_id> --after 1` with the Bash tool and `run_in_background`. Then end your turn and tell the user you wait for their feedback. Claude Code wakes you when the command exits:
    - exit 0: feedback arrived. The output names the `await_feedback` call. Make it, then act by the intent as listed under polling.
    - exit 2: the review is closed. Stop.
@@ -45,6 +45,13 @@ You and the user review one diagram together. The user edits it in the browser. 
 
 - Never delete code without asking the user first.
 - Treat every `@code` anchor as the link between an element and the code. Keep the anchors up to date in each pushed revision.
+
+## Troubleshooting
+
+- Start Claude Code with `--dangerously-load-development-channels plugin:xematik-diagram-review@xematik`. Use it with `--resume` too. Without it, no channel message comes.
+- The bridge keeps its login in `~/.config/xematik/channel.json`. Create the folder first. In a sandbox, allow it (nono: `--allow ~/.config/xematik`).
+- The `watch_review` result can hold a login URL. Show it to the user.
+- On a `stopped` message, tell the user the reason. After the problem is fixed, call `watch_review` again.
 
 ## Plan mode
 

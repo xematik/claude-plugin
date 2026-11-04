@@ -36,6 +36,18 @@ Without it, the agent polls for feedback.
 5. Run `chmod +x xematik-channel`.
 6. Move the file to a directory on your `PATH`.
 
+## Channels
+
+Channels let your feedback wake the running Claude Code session.
+
+1. Start Claude Code with the flag `--dangerously-load-development-channels plugin:xematik-diagram-review@xematik`.
+   Use the same flag with `--resume`. Without it, feedback does not wake a resumed session.
+2. The bridge keeps its login in `~/.config/xematik/channel.json`.
+   Create the folder `~/.config/xematik` first.
+   In a sandbox, allow the folder. For nono, use `--allow ~/.config/xematik`.
+3. The login link shows in the result of `watch_review` and as a channel message. Open it in your browser.
+4. On a `stopped` message, fix the reason. Then ask the agent to watch the review again.
+
 ## MCP server only
 
 The MCP server works without the plugin:
