@@ -45,6 +45,11 @@ You and the user review one diagram together. The user edits it in the browser. 
 
 - Never delete code without asking the user first.
 - Treat every `@code` anchor as the link between an element and the code. Keep the anchors up to date in each pushed revision.
+- Answer each feedback in its session with `reply` or `push_revision`. The user reads the review panel, not your chat.
+- If the work takes long, send a short `reply` first, for example "Got it, working on it."
+- When a plan or design changes, push a new revision that shows it. Each push is a new entry in the review history.
+- Before `close_review` or a move to another session, reply in the old session with the reason and the new url.
+- Pass `provider` and `type` to `open_review`. Pass them to `push_revision` only when the kind changes.
 
 ## Troubleshooting
 

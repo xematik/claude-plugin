@@ -16,5 +16,5 @@ Follow the `diagram-review` skill. Call `get_agent_guide` first.
    - `xematik-channel wait <session_id> --after 1` with the Bash tool and `run_in_background`.
    - Polling with `await_feedback`.
    Then end your turn and tell the user you wait for their feedback in the browser.
-5. When feedback arrives, update the plan to match it. Do not edit code. If the diagram needs a change, call `push_revision`.
+5. When feedback arrives, update the plan to match it. Do not edit code. When the plan changes, call `push_revision` with a diagram of the new plan, so the user sees it.
 6. Call `close_review` when the user is done. Then show the updated plan and ask to exit plan mode.
