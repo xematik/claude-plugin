@@ -22,18 +22,18 @@ You and the user review one diagram together. The user edits it in the browser. 
    - Pass the project modules as `palette_blocks`, a JSON array: `[{"name":"billing","path":"src/billing/"}]`.
    - The user drops these blocks on the diagram. Each one carries its code path.
 6. Give the returned url to the user.
-7. If the `watch_review` tool is available, call it with `session_id` and `after_revision` 1. Then end your turn and tell the user you wait for their feedback in the browser. Channel messages `<channel source="xematik-channel">` wake you. Act by the `kind`:
+7. If channels were explicitly enabled for this Claude session, call `watch_review` with `session_id` and `after_revision` 1. Then end your turn and tell the user you wait for their feedback in the browser. Channel messages `<channel source="xematik-channel">` wake you. Act by the `kind`:
    - `feedback`: call `await_feedback` with the `after_revision` named in the text. Then act as in step 8.
    - `closed`: stop.
    - `login`: show the URL to the user.
    - `stopped`: tell the user the reason. After the problem is fixed, call `watch_review` again.
-8. If `watch_review` is not available, or the user reports that no channel message came (channels are not active in this session), run `xematik-channel wait <session_id> --after 1` with the Bash tool and `run_in_background`. Then end your turn and tell the user you wait for their feedback. Claude Code wakes you when the command exits:
+8. If channels were not explicitly enabled, or the user reports that no channel message came, run `xematik-channel wait <session_id> --after 1` with the Bash tool and `run_in_background`. Then end your turn and tell the user you wait for their feedback. Claude Code wakes you when the command exits:
    - exit 0: feedback arrived. The output names the `await_feedback` call. Make it, then act by the intent as listed under polling.
    - exit 2: the review is closed. Stop.
    - exit 3: no feedback for 30 minutes. Ask the user if they still want the review.
-   - exit 1: an error (for example not logged in). Read the output and use polling.
-   After you push or reply, start the waiter again with `--after` set to your last handled revision.
-9. Polling is the last choice. Use it only when `watch_review` and `xematik-channel wait` are not available. Loop on `await_feedback` with `session_id` and `after_revision`.
+   - exit 1: an error (for example not logged in). Run `xematik-channel login` when needed, then rearm the waiter; use polling if it remains unavailable.
+   After you push or reply, start the waiter again with `--after` set to your last handled revision. Rearm after resuming Claude; the background task ends when Claude exits.
+9. Polling is the last choice. Use it when the selected wakeup mode is unavailable. Loop on `await_feedback` with `session_id` and `after_revision`.
    - On status `waiting`, call it again at once. The user may take minutes. This is normal. Do not stop or ask the user.
    - On status `closed`, stop.
    - On status `feedback`, act by the intent:
@@ -53,12 +53,12 @@ You and the user review one diagram together. The user edits it in the browser. 
 
 ## Troubleshooting
 
-- Start Claude Code with `--dangerously-load-development-channels plugin:xematik-diagram-review@xematik`. Use it with `--resume` too. Without it, no channel message comes.
+- For explicit channel mode, start Claude Code with `--dangerously-load-development-channels plugin:xematik-diagram-review@xematik`. Use it with `--resume` too. Without it, no channel message comes.
 - The bridge keeps its login in `~/.config/xematik/channel.json`. Create the folder first. In a sandbox, allow it (nono: `--allow ~/.config/xematik`).
 - The `watch_review` result can hold a login URL. Show it to the user.
 - On a `stopped` message, tell the user the reason. After the problem is fixed, call `watch_review` again.
 
 ## Plan mode
 
-- The command `/xematik-diagram-review:review-plan` reviews the current plan as a diagram with intent `plan`. Use `(new)` as the `@code` path for parts that do not exist yet.
+- The command `/xematik-diagram-review:review-plan` reviews the current plan as a diagram and asks the user to choose `plan` when sending feedback. Use `(new)` as the `@code` path for parts that do not exist yet.
 - If `XEMATIK_PLAN_REVIEW=1` is set, the plugin refuses the first `ExitPlanMode` of each plan. Run `/xematik-diagram-review:review-plan`, then exit plan mode.

@@ -10,10 +10,10 @@ Follow the `diagram-review` skill. Call `get_agent_guide` first.
 2. Draw the plan as a component diagram at `module` level.
    - Add `@code <alias> -> <path>[::symbol]` anchors for parts that exist.
    - Use `(new)` as the path for parts that do not exist yet.
-3. Call `open_review` with the diagram text, the `level`, and intent `plan`. Give the returned url to the user.
+3. Call `open_review` with the diagram text and the `level`. Give the returned url to the user and ask them to choose Plan (feedback intent `plan`) when sending feedback.
 4. Wait for feedback in this order:
-   - `watch_review`, if the tool is available.
-   - `xematik-channel wait <session_id> --after 1` with the Bash tool and `run_in_background`.
+   - If channels are explicitly enabled, call `watch_review`.
+   - Otherwise run `xematik-channel wait <session_id> --after 1` with the Bash tool and `run_in_background`.
    - Polling with `await_feedback`.
    Then end your turn and tell the user you wait for their feedback in the browser.
 5. When feedback arrives, update the plan to match it. Do not edit code. When the plan changes, call `push_revision` with a diagram of the new plan, so the user sees it.

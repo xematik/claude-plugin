@@ -24,8 +24,7 @@ The agent must then open a diagram review of the plan first.
 
 ## Install the bridge
 
-The bridge pushes your feedback into the running Claude Code session.
-Without it, the agent polls for feedback.
+The bridge wakes the running Claude Code session through a background waiter. Explicit channel mode is also available. Without the bridge, the agent polls for feedback.
 
 1. Open https://github.com/xematik/claude-plugin/releases.
 2. Download the file for your system. Download `SHA256SUMS` too.
@@ -36,16 +35,20 @@ Without it, the agent polls for feedback.
 5. Run `chmod +x xematik-channel`.
 6. Move the file to a directory on your `PATH`.
 
-## Channels
+## Background waiter
 
-Channels let your feedback wake the running Claude Code session.
+Run `xematik-channel login` once and open the printed link. No channel flags are required. The agent starts `xematik-channel wait <session_id> --after <last_handled_revision>` as a Claude Bash background task and reads feedback with `await_feedback` when it exits. It rearms the waiter after each handled revision and after resuming Claude. The task ends when Claude exits. The wait command never opens a browser.
+
+## Explicit channel mode
+
+Channels let feedback wake the running Claude Code session. Tool availability alone does not establish that this mode is enabled.
 
 1. Start Claude Code with the flag `--dangerously-load-development-channels plugin:xematik-diagram-review@xematik`.
    Use the same flag with `--resume`. Without it, feedback does not wake a resumed session.
 2. The bridge keeps its login in `~/.config/xematik/channel.json`.
    Create the folder `~/.config/xematik` first.
    In a sandbox, allow the folder. For nono, use `--allow ~/.config/xematik`.
-3. The login link shows in the result of `watch_review` and as a channel message. Open it in your browser.
+3. Run `xematik-channel login` and open the printed link. Alternatively, `watch_review` can supply a login link.
 4. On a `stopped` message, fix the reason. Then ask the agent to watch the review again.
 
 ## MCP server only
