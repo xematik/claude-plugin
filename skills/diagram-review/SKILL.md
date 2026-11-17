@@ -39,6 +39,7 @@ You and the user review one diagram together. The user edits it in the browser. 
    - On status `feedback`, act by the intent:
      - `discuss` or `plan`: answer with `reply`. Do not edit code.
      - `apply`: edit the code, then call `push_revision` with the new diagram text.
+   - The feedback can come from another person in a shared review. The `sender` field names that person.
 10. Call `close_review` when the user is done. Then save the final diagram text under `docs/` (or the folder the user names), for example `docs/<name>.puml`. `xematik-channel check` reads that folder later and reports anchors that no longer match the code (`/xematik-diagram-review:check-drift`).
 
 ## Rules
