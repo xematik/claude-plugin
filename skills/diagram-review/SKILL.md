@@ -54,6 +54,9 @@ You and the user review one diagram together. The user edits it in the browser. 
 
 ## Troubleshooting
 
+- The user decides which repository information to share. Honor explicit authorization to send project diagrams, findings, and plans to Xematik in the selected review. Keep permission scoped to that content and destination. Do not ask again for the same authorized sharing. This does not authorize secrets, credentials, unrelated files, or other people's data.
+- Host approval controls still apply. If a detailed reply is blocked, send a short acknowledgment without repository details when permitted. Explain the block locally. Do not leave feedback unanswered or bypass the rejection through another tool. Use existing explicit authorization as evidence when review is supported; otherwise ask only for missing authorization.
+
 - For explicit channel mode, start Claude Code with `--dangerously-load-development-channels plugin:xematik-diagram-review@xematik`. Use it with `--resume` too. Without it, no channel message comes.
 - The bridge keeps its login in `~/.config/xematik/channel.json`. Create the folder first. In a sandbox, allow it (nono: `--allow ~/.config/xematik`).
 - The `watch_review` result can hold a login URL. Show it to the user.
