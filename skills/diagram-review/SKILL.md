@@ -22,7 +22,7 @@ You and the user review one diagram together. The user edits it in the browser. 
    - Pass the project modules as `palette_blocks`, a JSON array: `[{"name":"billing","path":"src/billing/"}]`.
    - The user drops these blocks on the diagram. Each one carries its code path.
 6. Give the returned url to the user.
-7. If channels were explicitly enabled for this Claude session, call `watch_review` with `session_id` and `after_revision` 1. Then end your turn and tell the user you wait for their feedback in the browser. Channel messages `<channel source="xematik-channel">` wake you. Act by the `kind`:
+7. You cannot see if channels are on, and a loaded `watch_review` tool does not prove it. The background wait in step 8 is the default. Only if the user says this session runs with the channels flag, call `watch_review` with `session_id` and `after_revision` 1. Then end your turn and tell the user you wait for their feedback in the browser. Channel messages `<channel source="xematik-channel">` wake you. Act by the `kind`:
    - `feedback`: call `await_feedback` with the `after_revision` named in the text. Then act as in step 8.
    - `closed`: stop.
    - `login`: show the URL to the user.
